@@ -13,7 +13,7 @@ O DataLabeler é uma ferramenta em desenvolvimento projetada para facilitar a ro
 ### Back-end: Python
 ### Front-end: PyQT5
 
-##Backlogs de Produto e Sprint
+## Backlog do Produto
 
 ### 1. Leitura de Bases de Dados em Formatos CSV e JSON
 - **Descrição:** O sistema deve ser capaz de importar bases de dados nos formatos CSV e JSON para serem rotuladas.
