@@ -145,7 +145,7 @@ Outras funcionalidades incluem: salvar os dados rotulados, exportando-os em dife
     * - [Frontend] Exibir os dados da amostra nesta tela de preview de forma clara [Samira]
     * - [Frontend] Adicionar botões "Iniciar Rotulação" ou "Gerar Nova Amostra" na tela de preview [Victoria]
 
-### História #Implícita: Distinção de Papéis (Desenvolvedor/Rotulador)
+### História #: Distinção de Papéis (Desenvolvedor/Rotulador)
 * **Descrição:** Implementar a lógica básica para diferenciar as funcionalidades disponíveis para Desenvolvedores e Rotuladores.
 * **Tarefas e Responsáveis:**
     * - [Backend] Implementar um mecanismo simples de identificação de papel (pode ser inicial, sem login complexo) [Caio]
@@ -174,7 +174,7 @@ Outras funcionalidades incluem: salvar os dados rotulados, exportando-os em dife
     * - [Frontend] Aplicar o filtro definido à visualização da amostra (antes ou durante a rotulação) [Victoria]
     * - [Testes] Criar testes para a lógica de filtragem [Lucas]
 
-### História #Implícita: Visualização de Progresso (Desenvolvedor)
+### História #: Visualização de Progresso (Desenvolvedor)
 * **Descrição:** O Desenvolvedor pode verificar as rotulações feitas até o momento.
 * **Tarefas e Responsáveis:**
     * - [Backend] Implementar função para sumarizar o estado da rotulagem (quantos itens rotulados, distribuição de labels, etc.) [Caio]
@@ -205,7 +205,7 @@ Outras funcionalidades incluem: salvar os dados rotulados, exportando-os em dife
     * - [Frontend] Implementar a exibição de tooltips com textos explicativos nesses pontos chave usando PyQT5 [Samira]
     * - [Conteúdo] Redigir textos claros e concisos para os tooltips [Victoria/Caio]
 
-### História #Implícita: Geração de Dataset Final/Parcial (Desenvolvedor)
+### História #11: Geração de Dataset Final/Parcial (Desenvolvedor)
 * **Descrição:** Permitir ao desenvolvedor gerar um dataset final a partir da mescla de rotulações (preparação para usar Kappa).
 * **Tarefas e Responsáveis:**
     * - [Backend] Implementar lógica para mesclar dados de diferentes arquivos de rotulação (associando labels de diferentes rotuladores à mesma instância) [Lucas]
