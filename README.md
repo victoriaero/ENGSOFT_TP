@@ -3,9 +3,9 @@
 ## Proposta e Objetivo
 O DataLabeler é uma ferramenta em desenvolvimento projetada para facilitar a rotulação de dados em tarefas de aprendizado supervisionado. O software permite a leitura de bases de dados em formatos comuns, como CSV e JSON, e a criação de amostras aleatórias a partir dessa base, o que ajuda a simplificar a tarefa de rotulação manual. 
 
-O programa conta com dois tipos distintos de usuários, o desenvolvedor/dono da base de dados e o rotulador. 
+O programa conta com o rotulador como usuário com login e senha e uma opção de entrar como dev com uma senha global (o programa deve ser hosteado por aquele que pretende disponibilizar os datasets a serem avaliados).
 
-O desenvolvedor terá a habilidade de fazer upload de suas bases, escolher labels pré determinadas a serem utilizadas, se as instâncias da base permitirão rotulações de labels múltiplas ou únicas, verificar as rotulações feitas até o momento, autorizar a geração de um dataset final ou parcial rotulado a partir da mescla de rotulações já feitas escolhidas.
+O desenvolvedor/host terá a habilidade de escolher suas bases, escolher labels pré determinadas a serem utilizadas, se as instâncias da base permitirão rotulações de labels múltiplas ou únicas, verificar as rotulações feitas até o momento, autorizar a geração de um dataset final ou parcial rotulado a partir da mescla de rotulações já feitas escolhidas.
 
 Já o rotulador tem apenas um papel, visualizar o dado e classificar instâncias de acordo com os critérios pré determinados pelo desenvolvedor, adicionando uma ou mais labels facilmente a cada entrada de dados, garantindo que as amostras estejam prontas para treinamento de modelos de aprendizado de máquina. 
 
@@ -20,8 +20,8 @@ Outras funcionalidades incluem: salvar os dados rotulados, exportando-os em dife
 ### Victoria Estanislau Ramos de Oliveira - 2021037490 - Full
 
 ## Tecnologias a serem empregadas
-### Back-end: Python
-### Front-end: PyQT5 
+### Back-end: Python ?
+### Front-end: PyQT5  ?
 
 ## Backlog do Produto
 
