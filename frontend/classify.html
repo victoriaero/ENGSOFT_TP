@@ -302,3 +302,271 @@
         `).join("");
         document.getElementById("labelOptions").innerHTML = optsHtml;
       }
+
+     
+      async function loadNextSample() {
+        if (samplesQueue.length === 0) {
+          document.getElementById("instanceContent").innerHTML =
+            "<p>You finished every instance, thank you!</p>";
+          document.getElementById("classificationForm").style.display = "none";
+          return;
+        }
+
+        currentSample = samplesQueue.shift();
+
+        // busca índices das rows
+        let r = await fetch(
+          `${API}/sample_rows/by_sample/${currentSample.id}`
+        );
+        if (!r.ok) return showError("Error loading instance indexes.");
+        rowIndices = await r.json();
+
+        // inicializa armazenamento local
+        // inicializa armazenamento local como Set<labelId>
+        rowIndices.forEach(idx => {
+          savedSelections[idx] = new Set();
+        });
+
+
+        // carrega anotações já existentes
+        const annResp = await fetch(
+          `${API}/annotations/by_sample/${currentSample.id}`
+          + `?evaluator_email=${encodeURIComponent(evaluatorEmail)}`
+        );
+
+
+        if (annResp.ok) {
+          const annotations = await annResp.json();
+          annotations.forEach(({ row_index, label_id }) => {
+            if (!savedSelections[row_index]) savedSelections[row_index] = new Set();
+            savedSelections[row_index].add(label_id);
+          });
+
+        }
+
+        // pula para a primeira não vista
+        const firstUnseen = rowIndices.find(idx => savedSelections[idx].size === 0);
+
+        currentIdx = firstUnseen !== undefined
+          ? rowIndices.indexOf(firstUnseen)
+          : 0;
+
+        showInstance();
+      }
+
+      async function showInstance() {
+        document.getElementById('classificationForm').reset();
+
+          // 1) content header
+        const ch = document.getElementById('contentHeader');
+        ch.textContent = 'Content:';  // ou "Atributos:", se preferir em PT
+
+        const idx = rowIndices[currentIdx];
+
+        // busca dados da linha
+        let r = await fetch(
+          `${API}/sample_rows/by_sample/${currentSample.id}/row/${idx}`
+        );
+        if (!r.ok) return showError("Error loading line data.");
+        const rowObj = await r.json();
+
+        // monta HTML
+        const html = attributes.map(a => {
+          const key = a.attr_name;
+          const val = rowObj.data[key] ?? "";
+          return `<p><strong>${key}:</strong> ${val}</p>`;
+        }).join("");
+        document.getElementById("instanceContent").innerHTML = html;
+
+        // reaplica seleções
+        // reaplica seleções do Set (ou vazio, se ainda não existir)
+        ;(savedSelections[idx] || new Set()).forEach(labelId => {
+          const inp = document.getElementById(`lbl${labelId}`);
+          if (inp) inp.checked = true;
+        });
+
+
+        // contador e visibilidade do Previous
+        document.getElementById("classificationCount").textContent =
+          `${currentIdx + 1} / ${rowIndices.length}`;
+
+        const nextBtn = document.querySelector('#classificationForm button[type="submit"]');
+        if (currentIdx === rowIndices.length - 1) {
+          nextBtn.textContent = 'Finish';
+        } else {
+          nextBtn.textContent = 'Next';
+        }
+
+        document.getElementById("prevBtn").style.display =
+          currentIdx > 0 ? "inline-block" : "none";
+      }
+
+      async function saveAllAnnotations() {
+        const overlay = document.getElementById('savingOverlay');
+
+        // exibe overlay
+        overlay.classList.remove('d-none');
+        overlay.classList.add('d-flex');
+
+        // 1) apaga tudo no servidor
+        await fetch(
+          `${API}/annotations/by_sample/${currentSample.id}`
+          + `?evaluator_email=${encodeURIComponent(evaluatorEmail)}`,
+          { method: "DELETE" }
+        );
+
+        // 2) posta as anotações
+        const promises = [];
+        for (const [rowIndex, labelsSet] of Object.entries(savedSelections)) {
+          for (const labelId of labelsSet) {
+            promises.push(createAnnotation(
+              currentSample.id,
+              Number(rowIndex),
+              labelId
+            ));
+          }
+        }
+        await Promise.all(promises);
+
+        // oculta overlay
+        overlay.classList.remove('d-flex');
+        overlay.classList.add('d-none');
+      }
+
+
+
+
+      async function createAnnotation(sampleId, rowIndex, labelId) {
+        return fetch(`${API}/annotations/`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            sample_id: sampleId,
+            row_index: rowIndex,
+            evaluator_email: evaluatorEmail,
+            label_id: labelId
+          })
+        });
+      }
+
+      document.getElementById("classificationForm")
+      .addEventListener("submit", async function(ev) {
+        ev.preventDefault();
+
+        // 1) Sincroniza o DOM
+        // 1) Sincroniza o DOM
+        const currentChosen = Array.from(
+          document.querySelectorAll('input[name="labelOption"]:checked')
+        ).map(cb => Number(cb.value));
+        // usa o row_index correto:
+        const idx = rowIndices[currentIdx];
+        savedSelections[idx] = new Set(currentChosen);
+
+
+        // 2) Se NÃO for a última instância, avança
+        if (currentIdx < rowIndices.length - 1) {
+          currentIdx++;
+          showInstance();
+          return;
+        }
+
+        // 3) Já está na última: valida faltantes
+        const missing = rowIndices.filter(i =>
+          !savedSelections[i] || savedSelections[i].size === 0
+        );
+        if (missing.length > 0) {
+          alert(
+            "You must label every instance to submit your answers.\n" +
+            "Instances remaining: " + missing.join(", ")
+          );
+          return;
+        }
+
+        // *** NOVO: confirma antes de submeter de verdade ***
+        if (!window.confirm(
+          "Do you want to submit your answers?\n" +
+          "After submission, no changes can be made."
+        )) {
+          return;  // aborta o fluxo de submit
+        }
+
+        // 4) Ao concluir (Finish): salva tudo e marca como completa
+        await saveAllAnnotations();
+        try {
+          await fetch(`${API}/samples/${currentSample.id}/complete`, {
+            method: "PUT"
+          });
+        } catch (err) {
+          console.error("Error completing sample:", err);
+        }
+        new bootstrap.Modal(
+          document.getElementById('sampleCompleteModal')
+        ).show();
+      });
+
+
+
+
+      function showError(msg) {
+        document.getElementById("instanceContent").innerHTML =
+          `<p class="text-danger">${msg}</p>`;
+        document.getElementById("classificationForm").style.display = "none";
+      }
+
+
+            // ─────────── Atalhos de Teclado ───────────
+      document.addEventListener('keydown', function(e) {
+
+        const nextSampleBtn = document.getElementById('nextSampleBtn');
+        
+        const modal = document.getElementById('sampleCompleteModal');
+        if (modal.classList.contains('show')) {
+          return;
+        }
+
+        // Ignora se o foco estiver em algum campo de texto (não aplicável aqui, mas por segurança)
+        if (['INPUT','TEXTAREA'].includes(document.activeElement.tagName)) return;
+
+        const labelInputs = Array.from(document.querySelectorAll('input[name="labelOption"]'));
+        const prevBtn     = document.getElementById('prevBtn');
+        const nextBtn     = document.querySelector('#classificationForm button[type="submit"]');
+
+        // Teclas 1…9 → clicar no checkbox/radio correspondente
+        if (/^[1-9]$/.test(e.key)) {
+          const idx = parseInt(e.key, 10) - 1;
+          if (labelInputs[idx]) {
+            e.preventDefault();
+            labelInputs[idx].click();
+          }
+          return;
+        }
+
+        // Enter → Next/Finish
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          nextBtn.click();
+          return;
+        }
+
+        // Backspace → Previous
+        if (e.key === 'Backspace') {
+          // Só se o botão estiver visível
+          if (prevBtn && prevBtn.style.display !== 'none') {
+            e.preventDefault();
+            prevBtn.click();
+          }
+          return;
+        }
+      });
+      // ───────────────────────────────────────────
+
+      document.addEventListener("DOMContentLoaded", init);
+    })();
+  </script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+  ></script>
+
+         
+</body>
+</html>
