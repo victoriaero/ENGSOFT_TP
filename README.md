@@ -20,221 +20,168 @@ Outras funcionalidades incluem: salvar os dados rotulados, exportando-os em dife
 ### Victoria Estanislau Ramos de Oliveira - 2021037490 - Full
 
 ## Tecnologias a serem empregadas
-### Back-end: Python ?
-### Front-end: PyQT5  ?
+### Back-end: 
+-**Python 3.10**
+-**FastAPI**
+-**SQLite** como DB
+-**SQLAlchemy** para modelagem e acesso do DB
+-**Uvicorn** como servidor ASGI
+
+### Front-end: 
+-**HTML5**
+-**CSS3**
+-**JavaScript** puro
+-**FetchAPI** para comunicar com o Back-end
 
 ## Backlog do Produto
 
-### 1. Leitura de Bases de Dados em Formatos CSV e JSON
-- **Descrição:** O sistema deve ser capaz de importar bases de dados nos formatos CSV e JSON para serem rotuladas.
-- **Prioridade:** Alta
-- **Critérios de Aceitação:** O sistema deve carregar corretamente os dados, mostrando as entradas para o usuário.
+### 1. Registro de Datasets (CSV / JSONL)
+- **Descrição:** upload via `/datasets/register`, detecção automática de separador, criação de atributos e samples sem repetição.
+- **Prioridade:** Alta  
+- **Critérios de Aceitação:**  
+  - A API aceita JSON com `path`, `type`, `sample_size`, `num_samples`, etc.  
+  - O backend lê as primeiras linhas do arquivo, detecta separador, cria atributos e gera samples aleatórios sem repetir índices.  
+  - O frontend (`register.html` + `register2.html`) envia o payload corretamente e navega para a próxima etapa.
 
-### 2. Criação de Amostras Aleatórias
-- **Descrição:** A ferramenta deve permitir a criação de amostras aleatórias da base de dados para facilitar a rotulação.
-- **Prioridade:** Alta
-- **Critérios de Aceitação:** O usuário pode definir o tamanho da amostra e os dados devem ser extraídos aleatoriamente da base carregada.
+### 2. Configuração de Labels e Atributos
+- **Descrição:** tela de configuração (`register2.html`) para escolher quais atributos serão exibidos aos anotadores e definir as labels.
+- **Prioridade:** Alta  
+- **Critérios de Aceitação:**  
+  - O endpoint `POST /datasets/{id}/configure` grava as listas de atributos e labels.  
+  - O frontend carrega `/datasets/{id}/attributes`, permite marcação e envia labels separadas por vírgula.
 
-### 3. Atribuição de Labels
-- **Descrição:** O usuário pode rotular cada entrada de dados com uma ou mais labels.
-- **Prioridade:** Alta
-- **Critérios de Aceitação:** A interface permite adicionar múltiplos labels a cada entrada de dados.
+### 3. Geração de Amostras Aleatórias Sem Reposição *(Implementado)*
+- **Descrição:** criar `num_samples` grupos de `sample_size` instâncias, sem índices repetidos.
+- **Prioridade:** Alta  
+- **Critérios de Aceitação:**  
+  - `required = sample_size × num_samples ≤ total_rows` valida antes de criar.  
+  - Usa `random.shuffle` + fatias do array de índices.  
 
-### 4. Exportação de Dados Rotulados
-- **Descrição:** O sistema deve permitir que o usuário exporte os dados rotulados nos formatos CSV ou JSON.
-- **Prioridade:** Alta
-- **Critérios de Aceitação:** Os dados devem ser exportados corretamente com as labels atribuídas.
+### 4. Fluxo de Rotulação de Instâncias
+- **Descrição:** exibir as linhas de cada sample em `classify.html`, permitir seleção de uma ou múltiplas labels e salvar via `POST /annotations/`.
+- **Prioridade:** Alta  
+- **Critérios de Aceitação:**  
+  - API `/sample_rows/by_sample/{id}` retorna `row.data` completo.  
+  - Frontend percorre `currentRows`, mostra atributos dinâmicos, coleta checkboxes/radios e envia anotações.
 
-### 5. Filtragem de Amostras
-- **Descrição:** O usuário pode filtrar as amostras baseadas em critérios como valores numéricos ou categorias.
-- **Prioridade:** Média
-- **Critérios de Aceitação:** O sistema deve fornecer filtros eficientes para restringir as amostras exibidas ao usuário.
+### 5. Exportação de Dados Rotulados
+- **Descrição:** permitir download dos dados anotados em CSV ou JSON.
+- **Prioridade:** Média  
+- **Critérios de Aceitação:**  
+  - Rotas `GET /datasets/{id}/export?format=csv` e `?format=json`.  
+  - Frontend exibe botões “Exportar CSV” e “Exportar JSON” no dashboard.
 
-### 6. Visualização da Amostra Antes de Rotulação
-- **Descrição:** O usuário pode visualizar a amostra antes de iniciar o processo de rotulação.
-- **Prioridade:** Média
-- **Critérios de Aceitação:** A visualização das amostras deve ser clara e acessível antes da rotulação.
+### 6. Filtragem de Amostras
+- **Descrição:** fornecer filtros por valor de atributo antes ou durante a rotulação.
+- **Prioridade:** Média  
+- **Critérios de Aceitação:**  
+  - Endpoint `/sample_rows/by_sample/{id}?filter[col]=valor`.  
+  - UI em `classify.html` para definir critério e reaplicar a requisição.
 
-### 7. Variação do Tamanho da Amostra e Número de Labels
-- **Descrição:** O sistema deve permitir ao usuário configurar o número de amostras e a quantidade de labels a serem atribuídas.
-- **Prioridade:** Média
-- **Critérios de Aceitação:** O usuário pode definir o número de amostras e a quantidade de labels, além de personalizar os nomes dos labels.
+### 7. Dashboard de Progresso de Rotulação
+- **Descrição:** página `dev-dashboard.html` mostrando quantas instâncias foram anotadas por sample e no total.
+- **Prioridade:** Média  
+- **Critérios de Aceitação:**  
+  - Endpoint `GET /datasets/{id}/stats` com contagens de annotations.  
+  - Frontend renderiza gráficos ou tabelas.
 
-### 8. Comparação de Classificadores com Fleiss' Kappa
-- **Descrição:** Implementar uma comparação entre dois ou mais classificadores com a métrica Fleiss' Kappa para medir a concordância entre os avaliadores.
-- **Prioridade:** Baixa
-- **Critérios de Aceitação:** O sistema deve calcular e exibir a métrica Fleiss' Kappa corretamente.
+### 8. Autorização por Senha em Datasets Privados
+- **Descrição:** modal de senha em `select-dataset.html` que chama `POST /datasets/{id}/verify-password`.
+- **Prioridade:** Baixa  
+- **Critérios de Aceitação:**  
+  - Se `is_private`, exibe modal; senha correta leva ao `classify.html`, caso contrário mostra erro.
 
-### 9. Salvar o Progresso da Rotulação
-- **Descrição:** O sistema deve permitir que o usuário salve o progresso da rotulação para retomar mais tarde.
-- **Prioridade:** Média
-- **Critérios de Aceitação:** O sistema deve salvar os dados rotulados e permitir que o usuário os recarregue posteriormente.
+### 9. Interface de Ajuda (Tooltips)
+- **Descrição:** dicas contextuais em pontos-chave da interface (campos, botões).
+- **Prioridade:** Baixa  
+- **Critérios de Aceitação:**  
+  - Implementar tooltips via atributos `title` ou componentes Bootstrap em formulários de registro, configuração e rotulação.
 
-### 10. Interface de Ajuda (Tooltips)
-- **Descrição:** A ferramenta deve fornecer dicas e orientações sobre como usar as funcionalidades, exibindo tooltips em pontos chave da interface.
-- **Prioridade:** Baixa
-- **Critérios de Aceitação:** A interface deve apresentar tooltips que ajudem o usuário a entender as funcionalidades da ferramenta.
-
-
-# Backlogs das Sprints - DataLabeler 
-(Tarefas atribuídas para os membros do grupo aleatóriamente, sujeito a mudança)
-
-## Sprint 1 Backlog - Fundação e Fluxo Básico
-
-*Objetivo do Sprint: Estabelecer a capacidade central de carregar dados, criar uma amostra, rotular (forma simples) e exportar.*
-
-### História #1: Leitura de Bases de Dados em Formatos CSV e JSON (Prioridade: Alta)
-* **Descrição:** O sistema deve ser capaz de importar bases de dados nos formatos CSV e JSON para serem rotuladas.
-* **Tarefas e Responsáveis:**
-    * - [Backend] Implementar função de leitura e parsing de arquivos CSV [Lucas]
-    * - [Backend] Implementar função de leitura e parsing de arquivos JSON [Lucas]
-    * - [Frontend] Criar interface para seleção de arquivo (CSV/JSON) [Samira]
-    * - [Frontend] Integrar backend para carregar e exibir prévia/confirmação dos dados carregados [Samira]
-    * - [Testes] Criar testes unitários para leitura de CSV e JSON [Caio]
-
-### História #2: Criação de Amostras Aleatórias (Prioridade: Alta)
-* **Descrição:** A ferramenta deve permitir a criação de amostras aleatórias da base de dados para facilitar a rotulação.
-* **Tarefas e Responsáveis:**
-    * - [Backend] Implementar lógica para extrair amostra aleatória de tamanho N da base carregada [Lucas]
-    * - [Frontend] Adicionar campo na interface para o usuário definir o tamanho da amostra [Victoria]
-    * - [Frontend] Implementar botão "Gerar Amostra" e conectar com o backend [Victoria]
-    * - [Frontend] Exibir a amostra gerada em uma tabela/lista na interface [Samira]
-
-### História #3: Atribuição de Labels (Prioridade: Alta - Versão Inicial Simples)
-* **Descrição:** O usuário pode rotular cada entrada de dados com *uma* label (versão inicial).
-* **Tarefas e Responsáveis:**
-    * - [Backend] Definir estrutura de dados para armazenar instância + label associada [Caio]
-    * - [Frontend] Para cada item da amostra, adicionar botões/dropdown para selecionar UMA label pré-definida (ex: Positivo/Negativo) [Victoria]
-    * - [Frontend] Armazenar a label selecionada para cada instância da amostra atual [Victoria]
-
-### História #4: Exportação de Dados Rotulados (Prioridade: Alta)
-* **Descrição:** O sistema deve permitir que o usuário exporte os dados rotulados nos formatos CSV ou JSON.
-* **Tarefas e Responsáveis:**
-    * - [Backend] Implementar função para gerar arquivo CSV com dados + coluna de label [Lucas]
-    * - [Backend] Implementar função para gerar arquivo JSON com dados + campo de label [Lucas]
-    * - [Frontend] Adicionar botões "Exportar CSV" e "Exportar JSON" [Samira]
-    * - [Frontend] Integrar botões de exportação com as funções do backend [Samira]
-    * - [Testes] Criar testes unitários para exportação em CSV e JSON [Caio]
+### 10. Métrica de Concordância (Fleiss’ Kappa) e Persistência de Progresso *(Implementado)*
+- **Descrição:**  
+  - **Kappa:** comparar múltiplos avaliadores.  
+  - **Persistência:** salvar/recuperar progresso de rotulação.  
+- **Prioridade:** Baixa / Média  
+- **Critérios de Aceitação:**  
+  - API calcula e retorna Fleiss’ Kappa.  
+  - Funcionalidade de exportar/importar progresso de rotulação.
 
 ---
 
-## Sprint 2 Backlog - Múltiplas Labels, Configuração e Visualização
+## Backlogs das Sprints – DataLabeler  
 
-*Objetivo do Sprint: Implementar a funcionalidade de múltiplas labels, permitir a configuração pelo desenvolvedor e melhorar a visualização.*
+### Sprint 1 Backlog – Fundação e Fluxo Básico  
+**Objetivo:** estabelecer upload de dataset, amostragem, rotulação simples e exportação.
 
-### História #3 (Refinamento): Atribuição de Labels (Suporte a Múltiplas Labels)
-* **Descrição:** O usuário pode rotular cada entrada de dados com uma ou mais labels, conforme configurado pelo desenvolvedor.
-* **Tarefas e Responsáveis:**
-    * - [Backend] Modificar estrutura de dados para suportar lista de labels por instância [Caio]
-    * - [Backend] Implementar lógica para o Desenvolvedor definir labels disponíveis e modo (única/múltipla) [Lucas]
-    * - [Frontend] Criar interface de configuração (para Desenvolvedor) para definir labels e modo [Victoria]
-    * - [Frontend] Modificar interface de rotulação para suportar seleção múltipla (ex: checkboxes) se configurado [Samira]
-    * - [Testes] Atualizar testes de atribuição e exportação para múltiplas labels [Caio]
+1. **Registro de Datasets** (Prioridade: Alta)  
+   - [Backend] `register_dataset` com parsing e criação de atributos/samples – **Lucas**  
+   - [Frontend] Form de upload em `register.html` e fetch para `/datasets/register` – **Samira**  
+   - [Testes] Unit tests para parsing de CSV/JSONL e validação de samples – **Caio**
 
-### História #7: Variação do Tamanho da Amostra e Número de Labels (Prioridade: Média)
-* **Descrição:** O sistema deve permitir ao usuário (Desenvolvedor) configurar o número de amostras e a quantidade/nomes de labels a serem atribuídas.
-* **Tarefas e Responsáveis:**
-    * - [Backend] Armazenar configurações de labels (nomes, quantidade) definidas pelo Desenvolvedor [Lucas]
-    * - [Frontend] Refinar interface de configuração (História #3) para incluir nomes customizados de labels [Victoria]
-    * - [Frontend] Garantir que a interface de rotulação use os nomes e quantidade de labels definidos [Samira]
+2. **Geração de Amostras Aleatórias** (Prioridade: Alta)  
+   - [Backend] Lógica sem reposição em `register_dataset` – **Lucas**  
+   - [Frontend] Inputs `sample_size` e `num_samples` em `register.html` – **Victoria**  
+   - [Testes] Validar ausência de índices duplicados – **Caio**
 
-### História #6: Visualização da Amostra Antes de Rotulação (Prioridade: Média)
-* **Descrição:** O usuário pode visualizar a amostra antes de iniciar o processo de rotulação.
-* **Tarefas e Responsáveis:**
-    * - [Frontend] Criar uma etapa/tela de "Preview da Amostra" após a geração e antes da rotulação [Samira]
-    * - [Frontend] Exibir os dados da amostra nesta tela de preview de forma clara [Samira]
-    * - [Frontend] Adicionar botões "Iniciar Rotulação" ou "Gerar Nova Amostra" na tela de preview [Victoria]
+3. **Rotulação Simples (1 label)** (Prioridade: Alta)  
+   - [Backend] Endpoint `POST /annotations/` – **Caio**  
+   - [Frontend] Interface de rádio buttons em `classify.html` – **Victoria**
 
-### História #: Distinção de Papéis (Desenvolvedor/Rotulador)
-* **Descrição:** Implementar a lógica básica para diferenciar as funcionalidades disponíveis para Desenvolvedores e Rotuladores.
-* **Tarefas e Responsáveis:**
-    * - [Backend] Implementar um mecanismo simples de identificação de papel (pode ser inicial, sem login complexo) [Caio]
-    * - [Frontend] Adaptar a interface para mostrar/ocultar opções com base no papel do usuário (ex: Configuração só para Desenvolvedor) [Victoria]
+4. **Exportação Básica de Dados Rotulados** (Prioridade: Alta)  
+   - [Backend] Rotas de exportação CSV/JSON – **Lucas**  
+   - [Frontend] Botões “Exportar” no dashboard – **Samira**
 
 ---
 
-## Sprint 3 Backlog - Persistência, Filtragem e Progresso
+### Sprint 2 Backlog – Configuração e Multilabel  
+**Objetivo:** permitir configuração de labels/atributos e suporte a múltiplas labels.
 
-*Objetivo do Sprint: Permitir salvar e carregar o progresso, filtrar amostras e dar visibilidade sobre o andamento da rotulagem.*
+1. **Configuração de Labels e Atributos** (Prioridade: Alta)  
+   - [Backend] `POST /datasets/{id}/configure` – **Caio**  
+   - [Frontend] `register2.html` para marcar atributos e inserir labels – **Victoria**
 
-### História #9: Salvar o Progresso da Rotulação (Prioridade: Média)
-* **Descrição:** O sistema deve permitir que o usuário salve o progresso da rotulação para retomar mais tarde.
-* **Tarefas e Responsáveis:**
-    * - [Backend] Definir formato e implementar lógica para salvar o estado atual da rotulagem (quais instâncias foram rotuladas e com quais labels) em um arquivo [Lucas]
-    * - [Backend] Implementar lógica para carregar um arquivo de progresso salvo e restaurar o estado na aplicação [Lucas]
-    * - [Frontend] Adicionar botões/menu "Salvar Progresso" e "Carregar Progresso" [Samira]
-    * - [Frontend] Integrar funcionalidade de salvar/carregar com o backend [Samira]
-    * - [Testes] Criar testes para salvar e carregar progresso [Caio]
+2. **Suporte a Multiplas Labels** (Prioridade: Média)  
+   - [Backend] Adaptar model e endpoint para lista de labels – **Caio**  
+   - [Frontend] Checkboxes condicionais em `classify.html` – **Samira**
 
-### História #5: Filtragem de Amostras (Prioridade: Média)
-* **Descrição:** O usuário pode filtrar as amostras baseadas em critérios como valores numéricos ou categorias (em colunas específicas).
-* **Tarefas e Responsáveis:**
-    * - [Backend] Implementar lógica de filtragem de dados baseada em critérios (ex: coluna X > valor Y, coluna Z == 'categoria A') [Caio]
-    * - [Frontend] Criar elementos de UI para o usuário definir filtros (selecionar coluna, operador, valor) [Victoria]
-    * - [Frontend] Aplicar o filtro definido à visualização da amostra (antes ou durante a rotulação) [Victoria]
-    * - [Testes] Criar testes para a lógica de filtragem [Lucas]
-
-### História #: Visualização de Progresso (Desenvolvedor)
-* **Descrição:** O Desenvolvedor pode verificar as rotulações feitas até o momento.
-* **Tarefas e Responsáveis:**
-    * - [Backend] Implementar função para sumarizar o estado da rotulagem (quantos itens rotulados, distribuição de labels, etc.) [Caio]
-    * - [Frontend] Criar uma tela/painel para o Desenvolvedor visualizar o sumário do progresso da rotulagem [Samira]
-    * - [Frontend] (Opcional) Permitir ao Desenvolvedor visualizar as labels atribuídas a instâncias específicas [Samira]
+3. **Preview de Amostra Antes de Rotulação** (Prioridade: Média)  
+   - [Frontend] Tela de visualização dos dados amostrados – **Samira**  
+   - [Frontend] Botões “Iniciar Rotulação” / “Gerar Nova Amostra” – **Victoria**
 
 ---
 
-## Sprint 4 Backlog - Concordância entre Avaliadores e Usabilidade
+### Sprint 3 Backlog – Filtragem e Dashboard  
+**Objetivo:** implementar filtros e oferecer painel de progresso.
 
-*Objetivo do Sprint: Implementar a métrica de concordância Fleiss' Kappa e melhorar a usabilidade com tooltips.*
+1. **Filtragem de Amostras** (Prioridade: Média)  
+   - [Backend] Parâmetros de filtro em `/sample_rows` – **Caio**  
+   - [Frontend] UI de filtros em `classify.html` – **Victoria**
 
-### História #8: Comparação de Classificadores com Fleiss' Kappa (Prioridade: Baixa)
-* **Descrição:** Implementar uma comparação entre (potencialmente) múltiplos arquivos de rotulação usando a métrica Fleiss' Kappa para medir a concordância.
-* **Tarefas e Responsáveis:**
-    * - [Backend] Pesquisar e escolher biblioteca Python para cálculo do Fleiss' Kappa ou implementar a fórmula [Lucas]
-    * - [Backend] Implementar lógica para carregar múltiplos arquivos de rotulação (progresso salvo ou exportado) referentes à *mesma* amostra/base [Caio]
-    * - [Backend] Preparar os dados carregados no formato exigido pela métrica Fleiss' Kappa [Caio]
-    * - [Backend] Calcular e retornar o valor do Fleiss' Kappa [Lucas]
-    * - [Frontend] Criar interface para o Desenvolvedor selecionar múltiplos arquivos de rotulação para comparação [Victoria]
-    * - [Frontend] Exibir o resultado do cálculo do Fleiss' Kappa para o Desenvolvedor [Victoria]
-    * - [Testes] Criar testes para o cálculo e integração do Fleiss' Kappa [Samira]
-
-### História #10: Interface de Ajuda (Tooltips) (Prioridade: Baixa)
-* **Descrição:** A ferramenta deve fornecer dicas e orientações sobre como usar as funcionalidades, exibindo tooltips em pontos chave da interface.
-* **Tarefas e Responsáveis:**
-    * - [Frontend] Identificar pontos chave da interface que se beneficiariam de tooltips (botões, campos complexos, etc.) [Samira]
-    * - [Frontend] Implementar a exibição de tooltips com textos explicativos nesses pontos chave usando PyQT5 [Samira]
-    * - [Conteúdo] Redigir textos claros e concisos para os tooltips [Victoria/Caio]
-
-### História #11: Geração de Dataset Final/Parcial (Desenvolvedor)
-* **Descrição:** Permitir ao desenvolvedor gerar um dataset final a partir da mescla de rotulações (preparação para usar Kappa).
-* **Tarefas e Responsáveis:**
-    * - [Backend] Implementar lógica para mesclar dados de diferentes arquivos de rotulação (associando labels de diferentes rotuladores à mesma instância) [Lucas]
-    * - [Frontend] Criar interface para o Desenvolvedor selecionar os arquivos de rotulação a serem mesclados e gerar o dataset final [Victoria]
-    * - [Frontend] Integrar a geração do dataset com a exibição opcional da concordância (Kappa) se aplicável [Victoria]
+2. **Dashboard de Progresso** (Prioridade: Média)  
+   - [Backend] Endpoint `GET /datasets/{id}/stats` – **Lucas**  
+   - [Frontend] Gráficos/tabelas em `dev-dashboard.html` – **Samira**
 
 ---
 
-## Sprint 5 Backlog - Refinamento, Testes Finais e Documentação
+### Sprint 4 Backlog – Segurança e Usabilidade  
+**Objetivo:** reforçar a autorização e melhorar a usabilidade.
 
-*Objetivo do Sprint: Realizar testes abrangentes, corrigir bugs, refinar a interface com base no feedback e finalizar a documentação.*
+1. **Autorização por Senha** (Prioridade: Baixa)  
+   - [Backend] `POST /datasets/{id}/verify-password` – **Caio**  
+   - [Frontend] Modal de senha em `select-dataset.html` – **Samira**
 
-### História #Geral: Testes e Correção de Bugs
-* **Descrição:** Garantir a estabilidade e o correto funcionamento de todas as funcionalidades implementadas.
-* **Tarefas e Responsáveis:**
-    * - [Testes] Executar testes de integração cobrindo os fluxos principais (Desenvolvedor e Rotulador) [Caio]
-    * - [Testes] Realizar testes de usabilidade com potenciais usuários (se possível) [Todos]
-    * - [Desenvolvimento] Corrigir bugs identificados durante os testes das Sprints anteriores e desta Sprint [Todos]
-    * - [Desenvolvimento] Revisar e refatorar código para clareza e performance onde necessário [Todos]
+2. **Interface de Ajuda (Tooltips)** (Prioridade: Baixa)  
+   - [Frontend] Adicionar tooltips contextuais em formulários e botões – **Victoria**
 
-### História #Geral: Refinamento da Interface e UX
-* **Descrição:** Melhorar a experiência do usuário com base nos testes e feedback.
-* **Tarefas e Responsáveis:**
-    * - [Frontend] Ajustar layout, mensagens de erro/sucesso e fluxo de navegação conforme feedback [Samira/Victoria]
-    * - [Frontend] Garantir consistência visual e de interação em toda a aplicação [Samira/Victoria]
+---
 
-### História #Geral: Documentação Final
-* **Descrição:** Finalizar a documentação do projeto, incluindo o README.
-* **Tarefas e Responsáveis:**
-    * - [Documentação] Revisar e completar o README.md no GitHub com instruções de instalação, uso e descrição final [Lucas]
-    * - [Documentação] Adicionar comentários relevantes no código onde ainda faltar [Todos]
-    * - [Documentação] Preparar uma breve apresentação ou relatório final do projeto (se aplicável) [Todos]
+### Sprint 5 Backlog – Métricas e Persistência  
+**Objetivo:** consolidar métricas de concordância e permitir salvar/retomar progresso.
+
+1. **Fleiss’ Kappa** (Prioridade: Baixa)  
+   - [Backend] Cálculo e API de Kappa – **Lucas**  
+   - [Testes] Validação dos valores de concordância – **Caio**
+
+2. **Persistência de Progresso de Rotulação** (Prioridade: Média)  
+   - [Backend] Save/load do estado de rotulação – **Lucas**  
+   - [Frontend] Botões “Salvar Progresso” / “Carregar Progresso” – **Samira**
