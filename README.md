@@ -80,33 +80,26 @@ Outras funcionalidades incluem: salvar os dados rotulados, exportando-os em dife
   - Rotas `GET /datasets/{id}/export?format=csv` e `?format=json`.  
   - Frontend exibe botões “Exportar CSV” e “Exportar JSON” no dashboard.
 
-### 6. Filtragem de Amostras
-- **Descrição:** fornecer filtros por valor de atributo antes ou durante a rotulação.
-- **Prioridade:** Média  
-- **Critérios de Aceitação:**  
-  - Endpoint `/sample_rows/by_sample/{id}?filter[col]=valor`.  
-  - UI em `classify.html` para definir critério e reaplicar a requisição.
-
-### 7. Dashboard de Progresso de Rotulação
+### 6. Dashboard de Progresso de Rotulação
 - **Descrição:** página `dev-dashboard.html` mostrando quantas instâncias foram anotadas por sample e no total.
 - **Prioridade:** Média  
 - **Critérios de Aceitação:**  
   - Endpoint `GET /datasets/{id}/stats` com contagens de annotations.  
   - Frontend renderiza gráficos ou tabelas.
 
-### 8. Autorização por Senha em Datasets Privados
+### 7. Autorização por Senha em Datasets Privados
 - **Descrição:** modal de senha em `select-dataset.html` que chama `POST /datasets/{id}/verify-password`.
 - **Prioridade:** Baixa  
 - **Critérios de Aceitação:**  
   - Se `is_private`, exibe modal; senha correta leva ao `classify.html`, caso contrário mostra erro.
 
-### 9. Interface de Ajuda (Tooltips)
+### 8. Interface de Ajuda (Tooltips)
 - **Descrição:** dicas contextuais em pontos-chave da interface (campos, botões).
 - **Prioridade:** Baixa  
 - **Critérios de Aceitação:**  
   - Implementar tooltips via atributos `title` ou componentes Bootstrap em formulários de registro, configuração e rotulação.
 
-### 10. Persistência de Progresso *(Implementado)*
+### 9. Persistência de Progresso *(Implementado)*
 - **Descrição:**  
   - salvar/recuperar progresso de rotulação.  
 - **Prioridade:** Baixa / Média  
