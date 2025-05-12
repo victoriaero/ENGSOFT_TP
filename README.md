@@ -114,22 +114,22 @@ Outras funcionalidades incluem: salvar os dados rotulados, exportando-os em dife
 **Objetivo:** estabelecer upload de dataset, amostragem, rotulação simples e exportação.
 
 1. **Registro de Datasets** (Prioridade: Alta)  
-   - [Backend] `register_dataset` com parsing e criação de atributos/samples – **Lucas**  
-   - [Frontend] Form de upload em `register.html` e fetch para `/datasets/register` – **Samira**  
-   - [Testes] Unit tests para parsing de CSV/JSONL e validação de samples – **Caio**
+   - [Backend] `register_dataset` com parsing e criação de atributos/samples  
+   - [Frontend] Form de upload em `register.html` e fetch para `/datasets/register`
+   - [Testes] Unit tests para parsing de CSV/JSONL e validação de samples 
 
 2. **Geração de Amostras Aleatórias** (Prioridade: Alta)  
-   - [Backend] Lógica sem reposição em `register_dataset` – **Lucas**  
-   - [Frontend] Inputs `sample_size` e `num_samples` em `register.html` – **Victoria**  
-   - [Testes] Validar ausência de índices duplicados – **Caio**
+   - [Backend] Lógica sem reposição em `register_dataset`
+   - [Frontend] Inputs `sample_size` e `num_samples` em `register.html`   
+   - [Testes] Validar ausência de índices duplicados –
 
 3. **Rotulação Simples (1 label)** (Prioridade: Alta)  
-   - [Backend] Endpoint `POST /annotations/` – **Caio**  
-   - [Frontend] Interface de rádio buttons em `classify.html` – **Victoria**
+   - [Backend] Endpoint `POST /annotations/` 
+   - [Frontend] Interface de rádio buttons em `classify.html` 
 
 4. **Exportação Básica de Dados Rotulados** (Prioridade: Alta)  
-   - [Backend] Rotas de exportação CSV/JSON – **Lucas**  
-   - [Frontend] Botões “Exportar” no dashboard – **Samira**
+   - [Backend] Rotas de exportação CSV/JSON 
+   - [Frontend] Botões “Exportar” no dashboard 
 
 ---
 
@@ -137,16 +137,16 @@ Outras funcionalidades incluem: salvar os dados rotulados, exportando-os em dife
 **Objetivo:** permitir configuração de labels/atributos e suporte a múltiplas labels.
 
 1. **Configuração de Labels e Atributos** (Prioridade: Alta)  
-   - [Backend] `POST /datasets/{id}/configure` – **Caio**  
-   - [Frontend] `register2.html` para marcar atributos e inserir labels – **Victoria**
+   - [Backend] `POST /datasets/{id}/configure`    
+   - [Frontend] `register2.html` para marcar atributos e inserir labels 
 
 2. **Suporte a Multiplas Labels** (Prioridade: Média)  
-   - [Backend] Adaptar model e endpoint para lista de labels – **Caio**  
-   - [Frontend] Checkboxes condicionais em `classify.html` – **Samira**
+   - [Backend] Adaptar model e endpoint para lista de labels    
+   - [Frontend] Checkboxes condicionais em `classify.html` 
 
 3. **Preview de Amostra Antes de Rotulação** (Prioridade: Média)  
-   - [Frontend] Tela de visualização dos dados amostrados – **Samira**  
-   - [Frontend] Botões “Iniciar Rotulação” / “Gerar Nova Amostra” – **Victoria**
+   - [Frontend] Tela de visualização dos dados amostrados 
+   - [Frontend] Botões “Iniciar Rotulação” / “Gerar Nova Amostra” 
 
 ---
 
@@ -154,12 +154,12 @@ Outras funcionalidades incluem: salvar os dados rotulados, exportando-os em dife
 **Objetivo:** implementar filtros e oferecer painel de progresso.
 
 1. **Filtragem de Amostras** (Prioridade: Média)  
-   - [Backend] Parâmetros de filtro em `/sample_rows` – **Caio**  
-   - [Frontend] UI de filtros em `classify.html` – **Victoria**
+   - [Backend] Parâmetros de filtro em `/sample_rows`
+   - [Frontend] UI de filtros em `classify.html` 
 
 2. **Dashboard de Progresso** (Prioridade: Média)  
-   - [Backend] Endpoint `GET /datasets/{id}/stats` – **Lucas**  
-   - [Frontend] Gráficos/tabelas em `dev-dashboard.html` – **Samira**
+   - [Backend] Endpoint `GET /datasets/{id}/stats`  
+   - [Frontend] Gráficos/tabelas em `dev-dashboard.html`
 
 ---
 
@@ -167,8 +167,8 @@ Outras funcionalidades incluem: salvar os dados rotulados, exportando-os em dife
 **Objetivo:** reforçar a autorização e melhorar a usabilidade.
 
 1. **Autorização por Senha** (Prioridade: Baixa)  
-   - [Backend] `POST /datasets/{id}/verify-password` – **Caio**  
-   - [Frontend] Modal de senha em `select-dataset.html` – **Samira**
+   - [Backend] `POST /datasets/{id}/verify-password` 
+   - [Frontend] Modal de senha em `select-dataset.html`
 
 2. **Interface de Ajuda (Tooltips)** (Prioridade: Baixa)  
    - [Frontend] Adicionar tooltips contextuais em formulários e botões – **Victoria**
@@ -179,8 +179,8 @@ Outras funcionalidades incluem: salvar os dados rotulados, exportando-os em dife
 **Objetivo:** consolidar métricas de concordância e permitir salvar/retomar progresso.
 
 1. **Fleiss’ Kappa** (Prioridade: Baixa)  
-   - [Backend] Cálculo e API de Kappa – **Lucas**  
-   - [Testes] Validação dos valores de concordância – **Caio**
+   - [Backend] Cálculo e API de Kappa 
+   - [Testes] Validação dos valores de concordância 
 
 2. **Persistência de Progresso de Rotulação** (Prioridade: Média)  
    - [Backend] Save/load do estado de rotulação – **Lucas**  
