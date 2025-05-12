@@ -97,13 +97,11 @@ Outras funcionalidades incluem: salvar os dados rotulados, exportando-os em dife
 - **Critérios de Aceitação:**  
   - Implementar tooltips via atributos `title` ou componentes Bootstrap em formulários de registro, configuração e rotulação.
 
-### 10. Métrica de Concordância (Fleiss’ Kappa) e Persistência de Progresso *(Implementado)*
+### 10. Persistência de Progresso *(Implementado)*
 - **Descrição:**  
-  - **Kappa:** comparar múltiplos avaliadores.  
-  - **Persistência:** salvar/recuperar progresso de rotulação.  
+  - salvar/recuperar progresso de rotulação.  
 - **Prioridade:** Baixa / Média  
-- **Critérios de Aceitação:**  
-  - API calcula e retorna Fleiss’ Kappa.  
+- **Critérios de Aceitação:**   
   - Funcionalidade de exportar/importar progresso de rotulação.
 
 ---
