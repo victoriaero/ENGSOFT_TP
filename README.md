@@ -1,7 +1,7 @@
 # Trabalho Prático de Engenharia de Software - DataLabeler
 
 ## Proposta e Objetivo
-O DataLabeler é uma ferramenta em desenvolvimento projetada para facilitar a rotulação de dados em tarefas de aprendizado supervisionado. O software permite a leitura de bases de dados em formatos comuns, como CSV e JSON, e a criação de amostras aleatórias a partir dessa base, o que ajuda a simplificar a tarefa de rotulação manual. 
+O DataLabeler é uma ferramenta em desenvolvimento projetada para facilitar a rotulação de dados em tarefas de aprendizado supervisionado. O software permite a leitura de bases de dados em formatos comuns, como CSV, e a criação de amostras aleatórias a partir dessa base, o que ajuda a simplificar a tarefa de rotulação manual. 
 
 O programa conta com o rotulador como usuário com login e senha e uma opção de entrar como dev com uma senha global (o programa deve ser hosteado por aquele que pretende disponibilizar os datasets a serem avaliados).
 
