@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Label Data</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  >
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .classification-box {
+      position: relative;
+      background-color: #fff;
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+
+      max-width: 1020px; /* largura máxima */
+
+      margin: 0 auto;      /* centraliza horizontalmente */
+    }
+    #saveBtn {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+    }
+
+    .classification-count { font-size: 14px; color: #6c757d; margin-right: 20px; align-self: center; }
+    .form-check-input { transform: scale(1); border: 2px solid var(--bs-primary); accent-color: var(--bs-primary); margin-right: 0.5rem; }
+    .form-check-label { font-size: 1.2rem; font-weight: 700; }
+    .classification-box .mb-4 p strong {font-weight: 700; }
+    .no-data { text-align: center; color: #666; font-style: italic; }
+    .classification-box #labelOptions .form-check-label { font-size: 1.1rem; }
+    .classification-box #instanceContent p { font-size: 1.15rem; line-height: 1.2; margin: 0.4rem 0;}
+    .classification-box h4 {
+      font-size: 1.8rem;       /* antes: herda o tamanho do Bootstrap; ajuste pra ficar maior */
+      line-height: 1.2;      /* opcional: controla o espaçamento interno da linha */
+
+      
+    }
+
+    .horizontal-container {
+  display: flex;            /* ativa o flexbox */
+  flex-direction: row;      /* (padrão) alinha itens em linha */
+  align-items: top;      /* verticalmente centrar dentro da altura da div */
+  justify-content: flex-start; /* alinha à esquerda; use center ou space-between se quiser outro */
+  gap: 1rem;                /* espaço uniforme entre itens */
+}
+
+  
+#saveBtn {
+  position: static !important;
+  top: auto !important;
+  right: auto !important;
+}
+
+/* caixinha de dicas para o usuário */
+.hint-box {
+  max-width: 550px;      /* ou o quanto fizer sentido */
+  padding-right: 20px;
+}
+
+.hint-box .hint-text {
+  font-size: 0.95rem;
+
+  font-style: italic;
+  margin: 0.05rem 0;
+}
+
+
+#labelsHeader {
+  font-size: 1.2rem;
+  color: #0d6efd;
+}
+
+#contentHeader {
+  font-size: 1.2rem;
+  color: #0d6efd;
+}
+
+.no-italic {
+  font-style: normal;
+}
+
+.cabecalho {
+  margin-bottom: 1rem;
+}
+
+.titulo-label {
+  padding-top: 1rem;
+}
+
+  </style>
+</head>
+<body class="bg-light">
+
+  <a href="select-dataset.html" class="back-link d-flex align-items-center">
+    <span style="font-size:1.5rem; font-weight:1200;">⬅</span>
+    <span class="ms-2">Go back</span>
+  </a>
+
+  <div class="container my-5 ">
+    <div class="classification-box">
+
+    <!-- overlay de salvamento -->
+    <div id="savingOverlay"
+        class="position-absolute top-0 start-0 w-100 h-100 align-items-center justify-content-center bg-white bg-opacity-75 d-none"
+        style="z-index: 10;">
+      <div class="spinner-border text-primary" role="status"></div>
+      <span class="ms-2">Saving results, please do not leave this page yet</span>
+    </div>
+
+     <div class="cabecalho d-flex justify-content-between align-items-start">
+        <h4 class="titulo-label text-primary m-0">
+          📝 <strong>Label the instance below!</strong>
+        </h4>
+        <div class="horizontal-container">
+
+          <div class="hint-box">
+            <p class="hint-text"><span class="no-italic"><strong>💡Tip:</strong></span> If you save and come back later, you'll start from were you stopped!</p>
+            <p class="hint-text"><span class="no-italic"><strong>💡Tip:</strong></span> You can <strong>use your keyboard to label much faster!</strong> </p>
+            <p class="hint-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Press 1–9 to select labels, Enter for 'Next', Backspace for 'Previous').</p>
+            
+          </div>
+         </div> 
+      </div>
+
+     
+
+      <div id="contentHeader" class="mb-2 fw-semibold"></div>
+
+      <div id="instanceContent" class="mb-4">
+        <p class="no-data">Loading...</p>
+      </div>
+
+     
+
+      <form id="classificationForm">
+
+        <div id="labelsHeader" class="mb-2 fw-semibold"></div>
+        <div id="labelOptions" class="mb-4"></div>
+
+
+    <div class="d-flex justify-content-between align-items-center mt-4">
+      
+  <!-- lado esquerdo: contador -->
+
+  <!-- lado direito: todos os botões, com gap uniforme -->
+  <div class="d-flex align-items-center gap-2">
+      <span id="classificationCount" class="classification-count"></span>
+<button type="button" id="prevBtn" class="btn btn-secondary">Previous</button>
+    <button type="submit" class="btn btn-primary">Next</button>
+    
+  </div>
+  <button type="button" id="saveBtn" class="btn btn-outline-primary">
+      Save Partial Results and Leave
+    </button>
+</div>
+      </form>
+
+    </div>
+  </div>
+
+  <!-- Modal de conclusão de sample -->
+  <div class="modal fade" id="sampleCompleteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content rounded-4">
+        <div class="modal-header">
+          <h5 class="modal-title">Sample finished!</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          You finished every instance for this sample. Thank you!<br><br>
+          You can help even more and label another sample for this <br>dataset,
+          or you can go back to the dataset selection page.<br><br>
+          (If you choose this dataset again in the future <br>you'll start labeling a brand new sample).
+
+        </div>
+        <div class="modal-footer">
+          <a href="select-dataset.html" class="btn btn-secondary">Go back</a>
+          <button type="button" class="btn btn-primary" id="nextSampleBtn" data-bs-dismiss="modal">
+            Next Sample
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (async function() {
+      const API = window.location.origin;
+      
+      const params = new URLSearchParams(window.location.search);
+      let evaluatorEmail = params.get("evaluator") || localStorage.getItem("evaluatorEmail");
+
+      if (!evaluatorEmail) {
+        // Se não tiver email armazenado, força voltar ao login
+        window.location.href = 'index.html';
+      } else {
+        // Atualiza o localStorage caso venha pela URL
+        localStorage.setItem('evaluatorEmail', evaluatorEmail);
+      }
+
+      const datasetId = params.get("dataset");
+      let dataset, labels, attributes;
+      let samplesQueue = [];
+      let currentSample, rowIndices = [], currentIdx = 0;
+      let savedSelections = {};
+
+      async function init() {
+        // 1) metadados do dataset (inclui labels e atributos)
+        let r = await fetch(`${API}/datasets/${datasetId}`);
+        if (!r.ok) return showError("Dataset não encontrado");
+        dataset = await r.json();
+        labels = dataset.labels;
+        attributes = dataset.attributes;
+
+        // >>>> AQUI: cabeçalho das labels
+        const hdr = document.getElementById('labelsHeader');
+        hdr.textContent = dataset.is_multilabel
+          ? 'Labels (choose all that apply):'
+          : 'Labels:';
+
+        // injeta as opções de labels
+        renderLabelOptions();
+
+        // Passo 2: atualiza o Set em memória a cada check/uncheck
+        document.getElementById('labelOptions').addEventListener('change', () => {
+          const chosenArray = Array.from(
+            document.querySelectorAll('input[name="labelOption"]:checked')
+          ).map(cb => Number(cb.value));
+          // armazena no row_index correto:
+          const idx = rowIndices[currentIdx];
+          savedSelections[idx] = new Set(chosenArray);
+        });
+
+
+        // registra handlers de Previous e Save Partial
+        const prevBtn = document.getElementById("prevBtn");
+        prevBtn.addEventListener("click", () => {
+          const idx = rowIndices[currentIdx];
+          // lê *todos* os valores marcados AGORA
+          const chosenArray = Array.from(
+            document.querySelectorAll('input[name="labelOption"]:checked')
+          ).map(cb => Number(cb.value));
+          // guarda como Set<labelId>
+          savedSelections[idx] = new Set(chosenArray);
+
+          if (currentIdx > 0) {
+            currentIdx--;
+            showInstance();
+          }
+        });
+
+
+        const saveBtn = document.getElementById("saveBtn");
+        saveBtn.addEventListener("click", async () => {
+          await saveAllAnnotations();
+          alert("Resultados parciais salvos.");
+          // 2) redireciona após confirmar o save
+          window.location.href = "select-dataset.html";
+        });
+
+        // 2) lista de samples
+        r = await fetch(`${API}/samples/incomplete/by_dataset/${datasetId}`);
+        if (!r.ok) {
+          if (r.status === 404) {
+            return showError("Every sample in this dataset has already been classified. Thank you!");
+          }
+          return showError("Error loading samples.");
+        }
+        samplesQueue = await r.json();
+
+        if (samplesQueue.length === 0) {
+                      return showError("Every sample in this dataset has already been classified. Thank you!");
+        }
+
+
+        // registra o botão de Next no modal
+        document.getElementById("nextSampleBtn")
+          .addEventListener("click", loadNextSample);
+
+        // carrega a primeira sample
+        loadNextSample();
+      }
+
+      function renderLabelOptions() {
+        const multi = dataset.is_multilabel;
+        const optsHtml = labels.map(label => `
+          <div class="form-check mb-2">
+            <input class="form-check-input"
+                   type="${multi ? 'checkbox' : 'radio'}"
+                   name="labelOption"
+                   value="${label.id}"
+                   id="lbl${label.id}">
+            <label class="form-check-label" for="lbl${label.id}">
+              ${label.label_text}
+            </label>
+          </div>
+        `).join("");
+        document.getElementById("labelOptions").innerHTML = optsHtml;
+      }
