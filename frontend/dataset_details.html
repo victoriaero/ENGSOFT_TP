@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dataset Details</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  >
+  <link rel="stylesheet" href="css/style.css">
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+  >
+  <style>
+  </style>
+</head>
+<body class="bg-light py-5 d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+
+  <a href="dev-dashboard.html" class="back-link d-flex align-items-center">
+    <span style="font-size:1.5rem; font-weight:1200;">⬅</span>
+    <span class="ms-2">Go back</span>
+  </a>
+
+  <main class="bg-white rounded-4 shadow-lg p-5" style="max-width: 930px; width: 100%;">
+    <h2 class="mb-4 text-center text-primary">
+      Dataset <strong id="dataset-name"></strong> 📂
+    </h2>
+
+    <br><br>
+
+    <div class="row">
+    <!-- Annotation Status -->
+    <div class="col-md-9">
+      <div id="annotation-status" class="mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <span>Status <span id="status-badge" class="badge bg-secondary">Not Completed</span></span>
+          <small id="annotation-count" class="text-muted">0 of 0 samples completed</small>
+        </div>
+
+        <div class="progress" style="height: 20px;">
+          <div id="progress-bar" class="progress-bar" role="progressbar"
+              style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+            0%
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Download Button -->
+    <div class="col-md-3 d-flex align-items-end">
+        <a id="download-annotations-btn" class="btn btn-outline-primary w-100 mb-3" download>
+          <i class="bi bi-download me-2"></i>Download
+        </a>
+      </div>
+    </div>
+
+
+    <br>
+
+    <h5 class="text-primary">General Settings</h5>
+    <!-- Dataset Name (editable) -->
+    <div class="mb-3 edit-group">
+      <div class="row">
+      <div class="col-md-6 mb-3">
+        <label for="datasetName" class="form-label">Dataset Name</label>
+        <div class="input-group">
+          <input type="text" id="datasetName" class="form-control" readonly>
+          <button class="btn btn-outline-secondary edit-btn" type="button" data-field="datasetName">
+            <i class="bi bi-pencil-fill"></i>
+          </button>
+        </div>
+        <div class="mt-2 action-buttons d-none" data-field="datasetName">
+          <button class="btn btn-sm btn-secondary cancel-btn" type="button" data-field="datasetName">
+            Cancel
+          </button>
+          <button class="btn btn-sm btn-primary confirm-btn" type="button" data-field="datasetName">
+            Save
+          </button>
+        </div>
+    </div>
+    <div class="col-md-6 mb-3">
+      <!-- Dataset Owner (editable) -->
+      <div class="mb-3 edit-group">
+        <label for="datasetOwner" class="form-label">Dataset Owner</label>
+        <div class="input-group">
+          <input type="text" id="datasetOwner" class="form-control" readonly>
+          <button class="btn btn-outline-secondary edit-btn" type="button" data-field="datasetOwner">
+            <i class="bi bi-pencil-fill"></i>
+          </button>
+        </div>
+        <div class="mt-2 action-buttons d-none" data-field="datasetOwner">
+          <button class="btn btn-sm btn-secondary cancel-btn" type="button" data-field="datasetOwner">
+            Cancel
+          </button>
+          <button class="btn btn-sm btn-primary confirm-btn" type="button" data-field="datasetOwner">
+            Save
+          </button>
+        </div>
+      </div>
+    </div>
+    </div>
+
+        <!-- File Format & Dataset Path (não-editável) -->
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <label for="datasetPath" class="form-label">Dataset Path</label>
+        <input type="text" id="datasetPath" class="form-control" readonly>
+      </div>
+      <div class="col-md-6 mb-3">
+        <label for="datasetType" class="form-label">File Format</label>
+        <input type="text" id="datasetType" class="form-control" readonly>
+      </div>
+    </div>
+
+    <!-- Description (editable) -->
+    <div class="mb-3 edit-group">
+      <label for="datasetDescription" class="form-label">Description</label>
+      <div class="input-group">
+        <textarea id="datasetDescription" class="form-control" rows="3" readonly></textarea>
+        <button class="btn btn-outline-secondary edit-btn" type="button" data-field="datasetDescription">
+          <i class="bi bi-pencil-fill"></i>
+        </button>
+      </div>
+      <div class="mt-2 action-buttons d-none" data-field="datasetDescription">
+        <button class="btn btn-sm btn-secondary cancel-btn" type="button" data-field="datasetDescription">
+          Cancel
+        </button>
+        <button class="btn btn-sm btn-primary confirm-btn" type="button" data-field="datasetDescription">
+          Save
+        </button>
+      </div>
+    </div>
+
+    <br>
+    <hr>
+    <br>
+
+    <h5 class="text-primary">Annotation Settings</h5>
+
+      <!-- Sample Size (não-editável) -->
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <label for="sampleSize" class="form-label">Sample Size</label>
+        <input type="text" id="sampleSize" class="form-control" readonly>
+      </div>
+      <div class="col-md-6 mb-3">
+        <label for="numSamples" class="form-label">Total Samples</label>
+        <input type="text" id="numSamples" class="form-control" readonly>
+      </div>
+    </div>
+
+    <!-- Total Samples & Evaluators per Sample -->
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <label for="numEvaluators" class="form-label">Evaluators per Sample</label>
+        <input type="text" id="numEvaluators" class="form-control" readonly>
+      </div>
+      <div class="col-md-6 mb-3">
+        <label for="isMultilabel" class="form-label">Multilabel</label>
+        <input type="text" id="isMultilabel" class="form-control" readonly>
+      </div>
+    </div>
+
+    <!-- Access Password (editable, só se privado) -->
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <label for="isPrivate" class="form-label">Private</label>
+        <input type="text" id="isPrivate" class="form-control" readonly>
+      </div>
+      <div
+        class="col-md-6 mb-3 edit-group"
+        id="accessPwdGroup"
+        style="display: none;"
+      >
+        <label for="accessPwd" class="form-label">Access Password</label>
+        <div class="input-group">
+          <input type="text" id="accessPwd" class="form-control" readonly>
+          <button class="btn btn-outline-secondary edit-btn" type="button" data-field="accessPwd">
+            <i class="bi bi-pencil-fill"></i>
+          </button>
+        </div>
+        <div class="mt-2 action-buttons d-none" data-field="accessPwd">
+          <button class="btn btn-sm btn-secondary cancel-btn" type="button" data-field="accessPwd">
+            Cancel
+          </button>
+          <button class="btn btn-sm btn-primary confirm-btn" type="button" data-field="accessPwd">
+            Save
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="d-flex align-items-baseline mb-2">
+      <label for="label" class="form-label me-2">Labels:</label>
+      <div id="label-list" class="text-muted">e.g. positive, neutral, negative</div>
+    </div>
+
+    <div class="d-flex align-items-baseline mb-4">
+      <label for="attribute" class="form-label me-2">Attributes:</label>
+      <div id="attribute-list" class="text-muted">e.g. review_length, sentiment_score</div>
+    </div>
+
+  </div>
+
+
+    <button id="delete-btn" class="btn btn-outline-danger w-100 mt-3">
+      Delete Dataset
+    </button>
+
+
+  </main>
+
+  <script>
+    const API_BASE = 'http://localhost:8001';
+    const datasetId = new URLSearchParams(location.search).get('id');
+    const fieldMapping = {
+      datasetName:        'name',
+      datasetOwner:       'owner_name',
+      datasetDescription: 'description',
+      accessPwd:          'access_pwd'
+    };
+
+    function showError(msg) {
+      const box = document.getElementById('errorBox');
+      if (box) {
+        box.textContent = msg;
+        box.classList.remove('d-none');
+      } else {
+        alert(msg);
+      }
+    }
+
+    async function loadDatasetDetails() {
+      try {
+        const res = await fetch(`${API_BASE}/datasets/${datasetId}`);
+        if (!res.ok) throw new Error(`Erro ${res.status}`);
+        const ds = await res.json();
+
+        // preencher campos
+        document.getElementById('dataset-name').textContent = ds.name;
+        document.getElementById('datasetName').value        = ds.name || '';
+        document.getElementById('datasetOwner').value       = ds.owner_name || '';
+        document.getElementById('datasetPath').value        = ds.path || '';
+        document.getElementById('datasetDescription').value = ds.description || '';
+        document.getElementById('datasetType').value        = (ds.type || '').toUpperCase();
+        document.getElementById('sampleSize').value         = ds.sample_size;
+        document.getElementById('numSamples').value         = ds.num_samples;
+        document.getElementById('numEvaluators').value      = ds.num_evaluators;
+        document.getElementById('isMultilabel').value       = ds.is_multilabel ? 'Yes' : 'No';
+        document.getElementById('isPrivate').value          = ds.is_private ? 'Yes' : 'No';
+
+        // senha, se privado
+        const pwdGroup = document.getElementById('accessPwdGroup');
+        if (ds.is_private) {
+          pwdGroup.style.display = 'block';
+          document.getElementById('accessPwd').value = ds.access_pwd || '';
+        }
+
+        // labels e atributos
+        const ulLabels = document.getElementById('label-list');
+        const ulAttrs  = document.getElementById('attribute-list');
+
+        ulLabels.textContent = (ds.labels || []).map(l => l.label_text).join(', ') || '—';
+        ulAttrs.textContent  = (ds.attributes || []).map(a => a.attr_name).join(', ') || '—';
+
+
+      } catch (err) {
+        console.error(err);
+        showError(err.message || 'Falha ao carregar dataset.');
+      }
+    }
+
+    // exclusão
+    document.getElementById('delete-btn').addEventListener('click', async () => {
+      if (!confirm('Are you sure you want to delete this dataset?')) return;
+      try {
+        const res = await fetch(`${API_BASE}/datasets/${datasetId}`, { method: 'DELETE' });
+        if (res.status === 204) {
+          alert('Dataset deleted successfully.');
+          location.href = 'dev-dashboard.html';
+        } else {
+          const body = await res.text();
+          showError(`Erro ${res.status}: ${body}`);
+        }
+      } catch (err) {
+        showError(err.message);
+      }
+    });
+
+    // edição inline
+    function enableEdit(field) {
+      const input   = document.getElementById(field);
+      const editBtn = document.querySelector(`.edit-btn[data-field="${field}"]`);
+      const actions = document.querySelector(`.action-buttons[data-field="${field}"]`);
+      input.dataset.original = input.value;
+      input.readOnly = false;
+      input.focus();
+      editBtn.classList.add('d-none');
+      actions.classList.remove('d-none');
+    }
+
+    function cancelEdit(field) {
+      const input   = document.getElementById(field);
+      const editBtn = document.querySelector(`.edit-btn[data-field="${field}"]`);
+      const actions = document.querySelector(`.action-buttons[data-field="${field}"]`);
+      input.value = input.dataset.original;
+      input.readOnly = true;
+      actions.classList.add('d-none');
+      editBtn.classList.remove('d-none');
+    }
+
+    async function updateProgressBar() {
+      try {
+        const res = await fetch(`${API_BASE}/samples/progress/${datasetId}`);
+        if (!res.ok) throw new Error('Erro ao buscar progresso');
+        const data = await res.json();
+
+        const { completed, total } = data;
+        const percent = total === 0 ? 0 : Math.round((completed / total) * 100);
+
+        // Atualiza elementos da UI
+        const badge = document.getElementById("status-badge");
+        if (percent === 0) {
+          badge.textContent = "Not Started";
+          badge.className = "badge bg-secondary";
+        } else if (percent === 100) {
+          badge.textContent = "Completed";
+          badge.className = "badge bg-success";
+        } else {
+          badge.textContent = "In Progress";
+          badge.className = "badge bg-warning";
+        }
+        document.getElementById("annotation-count").textContent =
+          `${completed} of ${total} samples completed`;
+
+        const bar = document.getElementById("progress-bar");
+        bar.style.width = `${percent}%`;
+        bar.setAttribute("aria-valuenow", percent);
+        bar.textContent = `${percent}%`;
+
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    async function saveEdit(field) {
+      const input    = document.getElementById(field);
+      const newValue = input.value.trim();
+      const payload  = { [ fieldMapping[field] ]: newValue };
+
+      try {
+        const res = await fetch(`${API_BASE}/datasets/${datasetId}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (!res.ok) throw new Error(`Status ${res.status}`);
+        // confirma e retorna a estado readonly
+        input.readOnly = true;
+        document.querySelector(`.action-buttons[data-field="${field}"]`).classList.add('d-none');
+        document.querySelector(`.edit-btn[data-field="${field}"]`).classList.remove('d-none');
+      } catch (err) {
+        alert('Falha ao salvar: ' + err.message);
+      }
+    }
+
+    function initEditControls() {
+      document.querySelectorAll('.edit-btn').forEach(btn => {
+        btn.addEventListener('click', () => enableEdit(btn.dataset.field));
+      });
+      document.querySelectorAll('.cancel-btn').forEach(btn => {
+        btn.addEventListener('click', () => cancelEdit(btn.dataset.field));
+      });
+      document.querySelectorAll('.confirm-btn').forEach(btn => {
+        btn.addEventListener('click', () => saveEdit(btn.dataset.field));
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      initEditControls();
+      loadDatasetDetails();
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      initEditControls();
+      loadDatasetDetails().then(updateProgressBar);
+    });
+
+    document.getElementById('download-annotations-btn').href =
+    `${API_BASE}/datasets/${datasetId}/annotations/download`;
+
+  </script>
+
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+  ></script>
+</body>
+</html>
