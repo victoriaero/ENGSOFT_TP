@@ -11,7 +11,7 @@ Já o rotulador tem apenas um papel, visualizar o dado e classificar instâncias
 
 O principal objetivo é fazer com que o processo de labeling seja mais intuitivo e prático para o rotulador, especialmente porque muitas vezes esse participante não é alguém com experiência na área da computação, além de tornar o processo mais fluido e utilitário para os desenvolvedores, que precisam se preocupar menos com tecnicalidades e devem ter menos trabalho ao cooptar e instruir os rotuladores.
 
-Outras funcionalidades incluem: salvar os dados rotulados, exportando-os em diferentes formatos como CSV ou JSON, filtrar as amostras geradas por critérios específicos, como valores numéricos ou categorias, a opção de visualizar a amostra antes de iniciar a rotulação, a variação do tamanho da amostra extraída e do número de labels (e respectivos nomes, para auxiliar na explicabilidade da classificação). E para a parte de gerar o dataset final/parcial rotulado a partir da mesclagem pretendemos implementar um sistema de comparação classificadores usando a métrica do Fleiss' Kappa, que avalia a concordância entre dois ou mais avaliadores nesse processo, a fim de garantir mais robustez e se aproximar dos métodos usados na academia para essa tarefa.
+Outras funcionalidades incluem: salvar os dados rotulados, exportando-os em diferentes formatos como CSV ou JSON, filtrar as amostras geradas por critérios específicos, como valores numéricos ou categorias, a opção de visualizar a amostra antes de iniciar a rotulação, a variação do tamanho da amostra extraída e do número de labels (e respectivos nomes, para auxiliar na explicabilidade da classificação).
 
 ## Membros do grupo
 ### Lucas Dayrell de Andrade Machado - 2020035329 - Full
