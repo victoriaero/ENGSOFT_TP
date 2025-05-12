@@ -188,6 +188,8 @@ Outras funcionalidades incluem: salvar os dados rotulados, exportando-os em dife
 **Persistência de Progresso de Rotulação** (Prioridade: Média)  
    - [Backend] Save/load do estado de rotulação 
    - [Frontend] Botões “Salvar Progresso” / “Carregar Progresso”
+
+     
 [CERTO2UML.pdf](https://github.com/user-attachments/files/20165456/CERTO2UML.pdf)
 
 ![UML datalabeler](https://github.com/user-attachments/assets/59022b61-e52f-446a-aa72-35dca73aaae6)
