@@ -21,16 +21,25 @@ Outras funcionalidades incluem: salvar os dados rotulados, exportando-os em dife
 
 ## Tecnologias a serem empregadas
 ### Back-end: 
+
 -**Python 3.10**
+
 -**FastAPI**
+
 -**SQLite** como DB
+
 -**SQLAlchemy** para modelagem e acesso do DB
+
 -**Uvicorn** como servidor ASGI
 
 ### Front-end: 
+
 -**HTML5**
+
 -**CSS3**
+
 -**JavaScript** puro
+
 -**FetchAPI** para comunicar com o Back-end
 
 ## Backlog do Produto
