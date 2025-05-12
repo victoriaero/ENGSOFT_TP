@@ -1,0 +1,173 @@
+/* === Global base styles (já existiam) === */
+body {
+    background-color: #f2f3f5;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+input.form-control {
+    padding: 14px;
+    border-radius: 12px;
+    font-size: 16px;
+}
+
+button.btn, .btn-outline-secondary {
+    font-size: 16px;
+    padding: 12px 20px;
+    border-radius: 12px;
+    font-weight: 600;
+}
+
+/* === Dataset card base (já existia parcialmente) === */
+.dataset-card {
+    border-radius: 16px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, z-index 0.2s;
+    cursor: pointer;
+    /* adições */
+    width: 320px;
+    padding: 1rem 1rem 0.35rem;
+    position: relative;
+    overflow: visible;
+    z-index: 1;
+}
+.dataset-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+}
+
+/* === Novos estilos compartilhados === */
+/* Link de voltar */
+
+body {
+  padding-top: 1rem;  /* empurra todo o conteúdo lá de baixo, incluindo o container */
+}
+
+a.back-link {
+  position: absolute;
+  top: 1rem;
+  left: 1.5rem;
+  font-weight: 700 !important;
+  color: #0d6efd !important;
+  text-decoration: none !important;
+}
+
+/* Estrutura interna dos cartões */
+.dataset-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+}
+.dataset-header img { margin-right: 16px; }
+.dataset-info { flex-grow: 1; margin-right: 0.5rem; }
+
+/* Botões */
+.info-btn, .delete-btn {
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+.info-btn {
+    background-color: #0d6efd;
+    color: #fff;
+    width: 24px;
+    height: 24px;
+}
+.delete-btn {
+    background: #dc3545;
+    color: #fff;
+    width: 28px;
+    height: 28px;
+    font-weight: bold;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+/* Tooltip */
+.info-container { position: relative; }
+.info-tooltip {
+    position: absolute;
+    top: 120%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #fff;
+    color: #000;
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    padding: 12px 16px 12px 32px; /* inclui padding-left maior */
+    border-radius: 4px;
+    white-space: normal;
+    font-size: 1rem;
+    display: none;
+    width: 680px;
+    z-index: 1000;
+}
+.info-tooltip ul li { margin-bottom: 0.75rem; }
+.info-tooltip ul li:last-child { margin-bottom: 0; }
+.info-tooltip ul li strong:first-of-type { color: #0d6efd; }
+.info-container:hover .info-tooltip { display: block; }
+
+/* Card "Adicionar novo dataset" (aparece só no dashboard) */
+.add-dataset-card {
+    width: 320px;
+    height: 160px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px dashed #0d6efd;
+    border-radius: 12px;
+    cursor: pointer;
+    color: #0d6efd;
+    font-weight: bold;
+    font-size: 1.2rem;
+    transition: background-color 0.2s ease;
+}
+.add-dataset-card:hover { background-color: #eaf1ff; }
+
+/* Link de desenvolvedor sem botão, apenas texto sublinhado */
+.developer-link {
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: 16px;
+    font-weight: 600;
+    text-decoration: underline;
+    color: #999999;
+}
+
+/* Texto de introdução menos opaco e um pouco maior */
+.intro-text {
+    color: rgba(0, 0, 0, 0.9);
+    font-size: 1.125rem;
+}
+
+
+/* Aumenta o tamanho e a espessura da borda das checkboxes */
+.form-check-input {
+    width: 1.5rem;          /* 24px de largura */
+    height: 1.5rem;         /* 24px de altura */
+    border: 2px solid #0d6efd; /* borda azul do Bootstrap (adicione !important se houver conflito) */
+}
+
+/* Mantém o fundo azul quando marcada */
+.form-check-input:checked {
+    background-color: #0d6efd;
+    border-color:    #0d6efd;
+}
+
+/* Deixa o texto das labels maior e em negrito */
+.form-check-label {
+    font-size: 1.125rem;   /* 18px */
+    font-weight: 700;
+}
+
+/* Garante que o cabeçalho da caixa de classificação use o mesmo azul */
+.classification-box h4 {
+    color: #0d6efd !important;
+    /* ou use var(--bs-primary) se você já tiver a variável no seu tema */
+}
+
