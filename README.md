@@ -121,7 +121,7 @@ Outras funcionalidades incluem: salvar os dados rotulados, exportando-os em dife
 2. **Geração de Amostras Aleatórias** (Prioridade: Alta)  
    - [Backend] Lógica sem reposição em `register_dataset`
    - [Frontend] Inputs `sample_size` e `num_samples` em `register.html`   
-   - [Testes] Validar ausência de índices duplicados –
+   - [Testes] Validar ausência de índices duplicados 
 
 3. **Rotulação Simples (1 label)** (Prioridade: Alta)  
    - [Backend] Endpoint `POST /annotations/` 
@@ -171,17 +171,13 @@ Outras funcionalidades incluem: salvar os dados rotulados, exportando-os em dife
    - [Frontend] Modal de senha em `select-dataset.html`
 
 2. **Interface de Ajuda (Tooltips)** (Prioridade: Baixa)  
-   - [Frontend] Adicionar tooltips contextuais em formulários e botões – **Victoria**
+   - [Frontend] Adicionar tooltips contextuais em formulários e botões
 
 ---
 
-### Sprint 5 Backlog – Métricas e Persistência  
+### Sprint 5 Backlog – Persistência  
 **Objetivo:** consolidar métricas de concordância e permitir salvar/retomar progresso.
 
-1. **Fleiss’ Kappa** (Prioridade: Baixa)  
-   - [Backend] Cálculo e API de Kappa 
-   - [Testes] Validação dos valores de concordância 
-
-2. **Persistência de Progresso de Rotulação** (Prioridade: Média)  
-   - [Backend] Save/load do estado de rotulação – **Lucas**  
-   - [Frontend] Botões “Salvar Progresso” / “Carregar Progresso” – **Samira**
+**Persistência de Progresso de Rotulação** (Prioridade: Média)  
+   - [Backend] Save/load do estado de rotulação 
+   - [Frontend] Botões “Salvar Progresso” / “Carregar Progresso”
