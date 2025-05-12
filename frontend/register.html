@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Register Dataset - Step 1</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    >
+    <link rel="stylesheet" href="css/style.css"> <!-- CSS moderno com azul -->
+    <style>
+      /* Espaço igual ao da outra página */
+
+      /* Fonte ainda menor para os labels */
+      #registerForm .form-check-label {
+        font-size: 1rem;
+      }
+      .obs {
+        font-style: italic;
+        margin-top: 0.5rem;
+      }
+      #registerForm .form-check {
+        display: flex;
+        align-items: center;
+      }
+    </style>
+</head>
+<body class="bg-light py-5 d-flex flex-column justify-content-center align-items-center" style="min-height: 100vh;">
+
+  <a href="dev-dashboard.html" class="back-link d-flex align-items-center">
+    <span style="font-size:1.5rem; font-weight:1200;">⬅</span>
+    <span class="ms-2">Go back</span>
+  </a>
+
+  <main class="p-5 bg-white rounded-4 shadow-lg w-100" style="max-width: 720px;">
+    <h1 class="mb-4 text-center text-primary">
+      <span class="fw-normal">Register your </span><strong>Dataset</strong><span class="fw-normal"> 📦</span>
+    </h1>
+
+    <form id="registerForm" class="d-flex flex-column gap-3">
+      <!-- campos do formulário... -->
+      <!-- Dataset Name -->
+      <div>
+        <label for="name" class="form-label fw-semibold">Dataset Name</label>
+        <input type="text" class="form-control" id="name" name="name" required placeholder="e.g. customer_reviews">
+      </div>
+      <!-- Dataset Owner -->
+      <div>
+        <label for="owner" class="form-label fw-semibold">Dataset Owner</label>
+        <input type="text" class="form-control" id="owner" name="owner" placeholder="e.g. Yann LeCunn">
+      </div>
+      <!-- Dataset Path -->
+      <div>
+        <label for="dataset_path" class="form-label fw-semibold">Dataset Path</label>
+        <input type="text" class="form-control" id="dataset_path" name="dataset_path" required placeholder="e.g. /data/my_dataset.csv">
+      </div>
+      <!-- Dataset Description -->
+      <div>
+        <label for="description" class="form-label fw-semibold">Dataset Description</label>
+        <textarea class="form-control" id="description" name="description" rows="3" placeholder="Briefly describe the dataset..." required></textarea>
+      </div>
+      <!-- File Format & Sample Size -->
+      <div class="row">
+        <div class="col-md-6">
+          <label class="form-label fw-semibold d-block">File Format</label>
+
+          <input type="radio" class="btn-check" name="format" id="format_csv" value="csv" required>
+          <label class="btn btn-outline-primary me-2" for="format_csv">CSV</label>
+
+          <input type="radio" class="btn-check" name="format" id="format_jsonl" value="jsonl" disabled>
+          <label class="btn btn-outline-primary me-2 disabled" for="format_jsonl">JSONL</label>
+          <label class="obs form-label fw-normal small d-block">
+            CSVs can be used with any separator.<br>CSVs must have a header.<br> JSONLines format: each object must be in a separate line in the file.
+          </label>
+        </div>
+        <div class="col-md-6">
+          <label for="sample_size" class="form-label fw-semibold">Sample Size</label>
+          <input type="number" class="form-control" id="sample_size" name="sample_size" min="1" required placeholder="e.g. 50">
+        </div>
+      </div>
+      <!-- Evaluators + Total Samples -->
+      <div class="row">
+        <div class="col-md-6">
+          <label for="num_evaluators" class="form-label fw-semibold">Evaluators per Sample</label>
+          <input type="number" class="form-control" id="num_evaluators" name="num_evaluators" min="1" required placeholder="e.g. 2">
+        </div>
+        <div class="col-md-6">
+          <label for="num_samples" class="form-label fw-semibold">Total Samples</label>
+          <input type="number" class="form-control" id="num_samples" name="num_samples" min="1" required placeholder="e.g. 100">
+        </div>
+      </div>
+      <!-- Multilabel + Private -->
+<div class="row align-items-start">
+  <div class="col-md-6">
+    <div class="form-check d-flex align-items-center mt-2">
+      <input
+        type="checkbox"
+        class="form-check-input"
+        id="is_multilabel"
+        name="is_multilabel"
+      >
+      <label
+        class="form-check-label fw-semibold ms-2"
+        for="is_multilabel"
+      >
+        Allow multiple labels per instance
+      </label>
+    </div>
+    <div class="form-check d-flex align-items-center mt-3">
+      <input
+        type="checkbox"
+        class="form-check-input"
+        id="is_private"
+        name="is_private"
+      >
+      <label
+        class="form-check-label fw-semibold ms-2"
+        for="is_private"
+      >
+        Private Dataset (password request)
+      </label>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div
+      id="access_pwd_group"
+      class="mt-2"
+      style="display: none;"
+    >
+      <label
+        for="access_pwd"
+        class="form-label fw-semibold"
+      >
+        Dataset Access Password
+      </label>
+      <input
+        type="password"
+        class="form-control"
+        id="access_pwd"
+        name="access_pwd"
+        placeholder="Only for private datasets"
+      >
+    </div>
+  </div>
+</div>
+
+      <button type="submit" class="btn btn-primary w-100 mt-3">Next Step: Select Labels and Attributes to be Shown</button>
+    </form>
+
+    <!-- Alerta verde de criação em andamento -->
+    <div
+      id="creatingAlert"
+      class="alert alert-success position-fixed top-0 start-50 translate-middle-x mt-4 d-none"
+      style="z-index:1050; max-width:600px;"
+    >
+      Creating dataset and samples… please wait.
+    </div>
+  </main>
+
+  <script type="module">
+    const $ = sel => document.querySelector(sel);
+
+    /* mostrar / esconder o campo de senha */
+    $('#is_private').addEventListener('change', e => {
+      $('#access_pwd_group').style.display = e.target.checked ? 'block' : 'none';
+    });
+
+    /* submit com loading */
+    $('#registerForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      const btn = e.target.querySelector('button[type="submit"]');
+      const creatingAlert = $('#creatingAlert');
+
+      // mostra alerta e desabilita botão
+      creatingAlert.classList.remove('d-none');
+      btn.disabled = true;
+      btn.textContent = 'Creating…';
+
+      const f = e.target;
+      const payload = {
+        name:           f.name.value.trim(),
+        path:           f.dataset_path.value.trim(),
+        owner_name:     f.owner.value.trim() || null,
+        description:    f.description.value.trim(),
+        type:           f.format.value,
+        sample_size:    Number(f.sample_size.value),
+        num_samples:    Number(f.num_samples.value),
+        num_evaluators: Number(f.num_evaluators.value),
+        is_multilabel:  f.is_multilabel.checked,
+        is_private:     f.is_private.checked,
+      };
+      if (f.is_private.checked) payload.access_pwd = f.access_pwd.value;
+
+      try {
+        const res = await fetch('http://localhost:8001/datasets/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        if (!res.ok) {
+          const errTxt = await res.text();
+          throw new Error(errTxt || res.status);
+        }
+
+        const ds = await res.json().catch(() => ({}));
+        if (ds.id) {
+          localStorage.setItem('newDatasetId', ds.id);
+        }
+        // só agora redireciona
+        window.location.assign('register2.html');
+      } catch (err) {
+        console.error(err);
+        alert('Erro de conexão ou servidor: ' + err.message);
+        // reverte estado do botão e esconde alerta
+        btn.disabled = false;
+        btn.textContent = 'Next Step: Select Labels and Attributes to be Shown';
+        creatingAlert.classList.add('d-none');
+      }
+    });
+  </script>
+
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+  ></script>
+</body>
+</html>
